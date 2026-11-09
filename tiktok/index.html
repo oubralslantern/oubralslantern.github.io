@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Oubral's Lantern · TikTok sign-in</title>
+<link rel="icon" href="../favicon.png">
+<style>
+  :root { --ink: #0e0b16; --ink2: #1a1526; --bone: #efe8d8; --amber: #ffc440; --amber2: #d4a849; --muted: #a79f8e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: var(--ink); color: var(--bone);
+    font: 16px/1.5 ui-monospace, Consolas, monospace; display: grid; place-items: center; padding: 16px; }
+  main { width: 100%; max-width: 560px; }
+  h1 { font-size: 18px; color: var(--amber); margin: 0 0 12px; }
+  p { color: var(--muted); margin: 0 0 16px; }
+  code { display: block; word-break: break-all; padding: 14px; background: var(--ink2); border: 2px solid var(--amber2); color: var(--bone); }
+  button { margin-top: 12px; font: inherit; padding: 10px 16px; background: var(--amber); color: var(--ink); border: 0; cursor: pointer; }
+  .err { color: #ff8a7a; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Oubral's Lantern · TikTok sign-in</h1>
+  <p id="msg">Reading the sign-in result…</p>
+  <code id="code" hidden></code>
+  <button id="copy" hidden>Copy code</button>
+</main>
+<script>
+  // Static page: nothing is sent anywhere. It only shows the one-time code TikTok put in the address bar,
+  // so the owner can paste it into the local uploader tool.
+  const q = new URLSearchParams(location.search);
+  const msg = document.getElementById('msg'), box = document.getElementById('code'), btn = document.getElementById('copy');
+  if (q.get('code')) {
+    msg.textContent = 'Signed in. Copy this one-time code into the uploader (it expires in a few minutes):';
+    box.textContent = q.get('code'); box.hidden = false; btn.hidden = false;
+    btn.onclick = () => navigator.clipboard.writeText(q.get('code')).then(() => btn.textContent = 'Copied');
+  } else if (q.get('error')) {
+    msg.className = 'err';
+    msg.textContent = 'TikTok returned an error: ' + q.get('error') + (q.get('error_description') ? ' (' + q.get('error_description') + ')' : '');
+  } else {
+    msg.textContent = 'This page receives the TikTok sign-in result for the Oubral\'s Lantern uploader. Nothing to show yet.';
+  }
+</script>
+</body>
+</html>
